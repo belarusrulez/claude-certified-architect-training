@@ -1,0 +1,17 @@
+# Serve the trainer with nothing installed locally except Docker.
+#
+#   docker compose up        → open http://localhost:8080
+#   docker compose down      → stop
+#
+# ES modules require http(s) (file:// blocks them), so a static web server is
+# all this needs. nginx:alpine serves the repo read-only — no build step.
+services:
+  trainer:
+    image: nginx:1.27-alpine
+    container_name: cca-trainer
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/usr/share/nginx/html:ro
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped
