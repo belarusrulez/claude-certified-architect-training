@@ -79,6 +79,19 @@ h2{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:20px;letter-
 .panel.show{display:block;animation:fade .25s ease}
 @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
+/* ELI5 hover reveal (folded into the Learn tab) */
+.eli5-wrap{position:relative;display:inline-block;margin-bottom:16px;outline:none}
+.eli5-chip{font-size:12.5px;font-weight:600;color:var(--amber);background:var(--amber-soft);border:1px solid transparent;border-radius:999px;padding:7px 14px;cursor:help;display:inline-flex;align-items:center;gap:7px;font-family:"IBM Plex Mono",monospace;letter-spacing:.02em}
+.eli5-chip .ico{font-size:12px}
+.eli5-chip .hov{opacity:.6;font-weight:500}
+.eli5-wrap:hover .eli5-chip,.eli5-wrap:focus-visible .eli5-chip{border-color:var(--amber)}
+.eli5-pop{display:none;position:absolute;top:calc(100% + 8px);left:0;z-index:20;width:min(480px,82vw);background:var(--amber-soft);border:1px solid var(--amber);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+.eli5-pop .stage-label{color:var(--amber);margin-bottom:10px}
+.eli5-pop p{font-size:14.5px;margin-bottom:10px}
+.eli5-pop p:last-child{margin-bottom:0}
+.eli5-pop strong{font-weight:600}
+.eli5-wrap:hover .eli5-pop,.eli5-wrap:focus-within .eli5-pop{display:block;animation:fade .18s ease}
+
 .stage-card{border-radius:16px;padding:24px 26px;box-shadow:var(--shadow);border:1px solid var(--line)}
 .stage-eli5{background:var(--amber-soft);border-color:transparent}
 .stage-real{background:var(--card)}

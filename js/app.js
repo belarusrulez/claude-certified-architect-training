@@ -91,7 +91,7 @@ function wireDataTools(){
 function applyView(view,tab){ state.view=view; state.pendingTab=tab||null; if(TOPICS[view]) state.studied.add(view); persist(); buildNav(); render(); }
 function parseHash(){ const raw=location.hash.replace(/^#/,''); const p=raw.split('/'); return {view:p[0]||'home', tab:p[1]||null}; }
 function activateTopicTab(key){
-  const map={eli5:'p-eli5',real:'p-real',quick:'p-quick',scen:'p-scen'}; const pid=map[key]; if(!pid) return;
+  const map={eli5:'p-real',real:'p-real',quick:'p-quick',scen:'p-scen'}; const pid=map[key]; if(!pid) return;
   const tabs=main.querySelectorAll('.tab'); if(!tabs.length) return;
   main.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
   main.querySelectorAll('.panel').forEach(x=>x.classList.remove('show'));
@@ -110,7 +110,7 @@ function renderHome(){
   main.innerHTML=`
     <div class="eyebrow">Claude Certified Architect — Foundations</div>
     <h1>Your training console</h1>
-    <p class="lead">Walk each domain topic by topic. Every topic runs the same ladder: explain it like you're five, then the real engineering, then quick checks, then exam-style scenarios. When you're ready, the mixed exam shuffles scenarios across all five domains like the real thing.</p>
+    <p class="lead">Walk each domain topic by topic. Every topic runs the same ladder: Learn the real engineering (with a hover-for-ELI5 simple take), then quick checks, then exam-style scenarios. When you're ready, the mixed exam shuffles scenarios across all five domains like the real thing.</p>
     <div class="meta-row">
       <span class="tag">60 questions on the real exam</span>
       <span class="tag">10+ scenarios per chapter</span>
@@ -136,16 +136,19 @@ function renderTopic(tid){
     <div class="eyebrow">${DOMAIN_NAME[t.domain]}</div>
     <h1>${t.title}</h1>
     <div class="tabs">
-      <button class="tab active" data-p="p-eli5">Explain like I'm 5</button>
-      <button class="tab" data-p="p-real">The real deal</button>
+      <button class="tab active" data-p="p-real">Learn</button>
       <button class="tab" data-p="p-quick">Quick checks <span class="n">${t.quick.length}</span></button>
       <button class="tab" data-p="p-scen">Scenario questions <span class="n">${scen.length}</span></button>
     </div>
-    <div class="panel show" id="p-eli5"><div class="stage-card stage-eli5"><div class="stage-label">◔ Explain like I'm 5</div><div class="stage-card-inner">${t.eli5}</div></div></div>
-    <div class="panel" id="p-real"><div class="stage-card stage-real"><div class="stage-label">◑ The real deal</div><div class="stage-card-inner">${t.real}</div></div>${t.callout?`<div class="callout">${t.callout}</div>`:''}</div>
+    <div class="panel show" id="p-real">
+      <div class="eli5-wrap" tabindex="0" aria-label="Explain like I'm 5">
+        <span class="eli5-chip"><span class="ico">◔</span> Explain like I'm 5 <span class="hov">— hover</span></span>
+        <div class="eli5-pop"><div class="stage-label">◔ Explain like I'm 5</div>${t.eli5}</div>
+      </div>
+      <div class="stage-card stage-real"><div class="stage-label">◑ The real deal</div><div class="stage-card-inner">${t.real}</div></div>${t.callout?`<div class="callout">${t.callout}</div>`:''}</div>
     <div class="panel" id="p-quick">${quizBlock(inst5,quick,QUICK_OPTS)}</div>
     <div class="panel" id="p-scen">${quizBlock(instS,scen,SCEN_EXAM_OPTS)}</div>`;
-  const TKEY={'p-eli5':'eli5','p-real':'real','p-quick':'quick','p-scen':'scen'};
+  const TKEY={'p-real':'real','p-quick':'quick','p-scen':'scen'};
   main.querySelectorAll('.tab').forEach(tab=>tab.onclick=()=>{
     main.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
     main.querySelectorAll('.panel').forEach(x=>x.classList.remove('show'));

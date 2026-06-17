@@ -3,10 +3,10 @@
 A single-user study app for the **Claude Certified Architect (CCA) Foundations**
 exam. Walks all five exam domains chapter by chapter, each with the same ladder:
 
-1. **Explain like I'm 5** — the intuition.
-2. **The real deal** — the actual engineering, edge cases, and exam traps.
-3. **Quick checks** — fast concept questions.
-4. **Scenario questions** — 10+ exam-style scenarios per chapter, scored to the 720 line.
+1. **Learn** — the actual engineering, edge cases, and exam traps, with an
+   "Explain like I'm 5" simple take tucked behind a hover chip at the top.
+2. **Quick checks** — fast concept questions.
+3. **Scenario questions** — 10+ exam-style scenarios per chapter, scored to the 720 line.
 
 Plus a **Mixed exam** that pulls ten scenarios at random across every domain.
 
