@@ -4,7 +4,7 @@
 ES modules need http(s); opening index.html as a file:// URL won't load them.
 This serves the repo with correct MIME types using only the Python stdlib.
 
-    python3 serve.py                # http://localhost:8080
+    python3 serve.py                # http://localhost:8088
     python3 serve.py --port 9000
     python3 serve.py --open         # also open a browser tab
 
@@ -64,7 +64,7 @@ def _port_free(host: str, port: int) -> bool:
 def main() -> int:
     ap = argparse.ArgumentParser(description="Serve the CCA trainer locally.")
     ap.add_argument("--host", default="127.0.0.1", help="bind host (default 127.0.0.1)")
-    ap.add_argument("--port", type=int, default=8080, help="port (default 8080)")
+    ap.add_argument("--port", type=int, default=8088, help="port (default 8088)")
     ap.add_argument("--open", action="store_true", help="open a browser tab")
     args = ap.parse_args()
 

@@ -20,14 +20,14 @@ no account, no server-side state. Export / import / reset live in the sidebar.
 
 ```bash
 docker compose up
-# open http://localhost:8080
+# open http://localhost:8088
 docker compose down   # stop
 ```
 
 ### Python fallback (no Docker)
 
 ```bash
-python3 serve.py --open      # http://localhost:8080
+python3 serve.py --open      # http://localhost:8088
 ```
 
 > The app uses ES modules, which the browser refuses to load over `file://`.

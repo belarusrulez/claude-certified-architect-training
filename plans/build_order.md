@@ -24,7 +24,7 @@ Single source of truth for what's done and what's next on the trainer.
 - [x] Domains 2–5 topped up in `extra-more.js`
 
 ## Phase 5 — Containerized serving  ✅ Done
-- [x] `docker-compose.yml` (nginx:alpine, read-only mount, port 8080)
+- [x] `docker-compose.yml` (nginx:alpine, read-only mount, port 8088)
 - [x] `deploy/nginx.conf` (module MIME types, no-cache)
 - [x] `serve.py` Docker-free fallback (stdlib, colored output, argparse)
 
