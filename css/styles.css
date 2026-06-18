@@ -188,6 +188,16 @@ button.ghost:hover{border-color:var(--accent);color:var(--accent)}
 .dcard .dprog{margin-top:12px;height:5px;background:var(--line);border-radius:999px;overflow:hidden}
 .dcard .dprog>div{height:100%;background:var(--accent);width:0;border-radius:999px;transition:width .4s}
 
+/* exam scenarios */
+.scen-list{display:flex;flex-direction:column;gap:14px;margin-top:26px}
+.scen-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;box-shadow:var(--shadow)}
+.scen-card .scen-n{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.scen-card h3{font-family:"Space Grotesk",sans-serif;font-size:18px;font-weight:600;margin:5px 0 9px;line-height:1.25}
+.scen-card p{font-size:14.5px;color:var(--muted);margin-bottom:14px}
+.scen-doms{display:flex;flex-wrap:wrap;gap:7px}
+.dchip{font:inherit;font-size:12px;font-weight:500;color:var(--accent-ink);background:var(--accent-soft);border:1px solid transparent;border-radius:999px;padding:6px 12px;cursor:pointer}
+.dchip:hover{border-color:var(--accent)}
+
 /* mobile */
 .menu-btn{display:none;position:fixed;top:14px;left:14px;z-index:40;background:var(--card);border:1px solid var(--line);border-radius:10px;width:42px;height:42px;cursor:pointer;font-size:18px;color:var(--ink);box-shadow:var(--shadow)}
 .scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:30}

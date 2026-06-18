@@ -4,6 +4,7 @@
    module from index.html.
    ========================================================================= */
 import { DOMAINS, DOMAIN_NAME } from './data/domains.js';
+import { SCENARIOS } from './data/scenarios.js';
 import { TOPICS, getChapterScenarios } from './data/topics.js';
 import { store, log } from './store.js';
 import { state, persist, hydrate } from './state.js';
@@ -35,6 +36,7 @@ function buildNav(){
     });
   });
   h+=`<div class="nav-group"><span>Exam</span></div>`;
+  h+=`<button class="nav-item ${state.view==='scenarios'?'active':''}" data-view="scenarios"><span class="ico">▤</span> Exam scenarios</button>`;
   h+=`<button class="nav-item ${state.view==='mixed'?'active':''}" data-view="mixed"><span class="ico">✦</span> Mixed exam</button>`;
   h+=dataToolsHTML();
   nav.innerHTML=h;
@@ -98,7 +100,8 @@ function activateTopicTab(key){
   const tab=[...tabs].find(t=>t.dataset.p===pid); if(tab) tab.classList.add('active');
   const panel=document.getElementById(pid); if(panel) panel.classList.add('show');
 }
-function onHashChange(){ const {view,tab}=parseHash(); const v=(view==='mixed'||TOPICS[view])?view:'home'; if(v!==state.view){ applyView(v,tab); window.scrollTo({top:0,behavior:'smooth'}); } else if(tab){ activateTopicTab(tab); } }
+function isView(v){ return v==='mixed'||v==='scenarios'||!!TOPICS[v]; }
+function onHashChange(){ const {view,tab}=parseHash(); const v=isView(view)?view:'home'; if(v!==state.view){ applyView(v,tab); window.scrollTo({top:0,behavior:'smooth'}); } else if(tab){ activateTopicTab(tab); } }
 function go(view){ applyView(view,null); const cur=location.hash.replace(/^#/,'').split('/')[0]; if(cur!==view) location.hash=view; window.scrollTo({top:0,behavior:'smooth'}); }
 
 /* ---------- views ---------- */
@@ -192,8 +195,26 @@ function renderMixed(){
   if(state.quizzes['mixed'].graded) showScore('mixed',qs,MIXED_OPTS);
   document.getElementById('reshuffle').onclick=()=>{ buildMixed(true); renderMixed(); window.scrollTo({top:0,behavior:'smooth'}); };
 }
+function renderScenarios(){
+  main.innerHTML=`
+    <div class="eyebrow">Exam structure</div>
+    <h1>The six exam scenarios</h1>
+    <p class="lead">The real exam is scenario-based: it presents <strong>4 of these 6</strong> production scenarios at random, and each frames a set of questions. Every scenario names its <strong>primary domains</strong> — jump straight to the chapters it leans on.</p>
+    <div class="scen-list">
+      ${SCENARIOS.map(s=>`<div class="scen-card">
+        <div class="scen-n">Scenario ${s.n}</div>
+        <h3>${s.title}</h3>
+        <p>${s.desc}</p>
+        <div class="scen-doms">
+          ${s.domains.map(id=>{const dom=DOMAINS.find(d=>d.id===id);return `<button class="dchip" data-go="${dom.topics[0]}">${dom.title}</button>`;}).join('')}
+        </div>
+      </div>`).join('')}
+    </div>`;
+  main.querySelectorAll('.dchip').forEach(b=>b.onclick=()=>go(b.dataset.go));
+}
 function render(){
   if(state.view==='home') renderHome();
+  else if(state.view==='scenarios') renderScenarios();
   else if(state.view==='mixed') renderMixed();
   else if(TOPICS[state.view]) renderTopic(state.view);
   else renderHome();
@@ -204,7 +225,7 @@ function render(){
   log.info('booting CCA trainer');
   const lastView = hydrate(store.load());
   const h=parseHash();
-  state.view=(h.view==='mixed'||TOPICS[h.view])?h.view:(TOPICS[lastView]||lastView==='mixed'?lastView:'home');
+  state.view=isView(h.view)?h.view:(isView(lastView)?lastView:'home');
   state.pendingTab=h.tab;
   buildNav(); render();
   window.addEventListener('hashchange',onHashChange);

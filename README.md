@@ -46,6 +46,7 @@ python3 serve.py --open      # http://localhost:8088
 │   ├── quiz.js             # question rendering, grading, scoring
 │   └── data/
 │       ├── domains.js      # the five domains, weights, and chapter lists
+│       ├── scenarios.js    # the six exam scenarios + their primary domains
 │       ├── topics.js       # aggregator: merges d1..d5 into TOPICS
 │       └── d1.js … d5.js   # one module per domain; each chapter carries its
 │                           #   own eli5 / real / example / quick / scenario
