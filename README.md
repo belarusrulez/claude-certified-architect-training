@@ -33,6 +33,33 @@ python3 serve.py --open      # http://localhost:8088
 > The app uses ES modules, which the browser refuses to load over `file://`.
 > Use one of the servers above rather than double-clicking `index.html`.
 
+## For an LLM / AI coding agent
+
+No build, no package manager, no dependencies to install — it's static ES
+modules plus a server. Setup and verify in one pass:
+
+```bash
+# 1. get the code
+git clone https://github.com/belarusrulez/claude-certified-architect-training.git
+cd claude-certified-architect-training
+
+# 2. serve it (pick one)
+docker compose up -d          # http://localhost:8088   (preferred)
+python3 serve.py --port 8088  # fallback; stdlib only, no pip install
+
+# 3. verify the data graph loads and every chapter is well-formed
+for f in js/data/d?.js js/data/*.js js/app.js; do node --check "$f" || exit 1; done
+node -e 'Promise.all([import("./js/data/domains.js"),import("./js/data/topics.js")]).then(([d,t])=>{let n=0,s=0;for(const dom of d.DOMAINS)for(const id of dom.topics){const c=t.TOPICS[id];if(!c){console.log("MISSING",id);process.exit(1)}n++;s+=c.scenario.length}console.log("chapters",n,"scenarios",s)})'
+# expect: chapters 30 scenarios 304
+```
+
+Notes for editing:
+- Content lives in `js/data/d1.js … d5.js` (one module per domain); see **Adding
+  content** below. There is no test runner — `node --check` + the load assertion
+  above is the validation loop.
+- Port **8088** (not 8080) to avoid colliding with other local containers.
+- It's a `git` repo; commit/push only when the human asks.
+
 ## Layout
 
 ```
