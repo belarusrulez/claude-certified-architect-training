@@ -47,6 +47,7 @@ python3 serve.py --open      # http://localhost:8088
 │   └── data/
 │       ├── domains.js      # the five domains and weights
 │       ├── topics.js       # per-chapter content (eli5 / real / quick / scenario)
+│       ├── examples.js     # one worked artifact per chapter (shown in Learn)
 │       ├── extra.js        # seed scenario bank
 │       └── extra-more.js   # expanded scenario bank (tops each chapter to 10+)
 ├── deploy/nginx.conf       # static-serving config for the Docker image

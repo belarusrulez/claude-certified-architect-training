@@ -5,6 +5,7 @@
    ========================================================================= */
 import { DOMAINS, DOMAIN_NAME } from './data/domains.js';
 import { TOPICS, getChapterScenarios } from './data/topics.js';
+import { EXAMPLES } from './data/examples.js';
 import { store, log } from './store.js';
 import { state, persist, hydrate } from './state.js';
 import {
@@ -145,7 +146,7 @@ function renderTopic(tid){
         <span class="eli5-chip"><span class="ico">◔</span> Explain like I'm 5 <span class="hov">— hover</span></span>
         <div class="eli5-pop"><div class="stage-label">◔ Explain like I'm 5</div>${t.eli5}</div>
       </div>
-      <div class="stage-card stage-real"><div class="stage-label">◑ The real deal</div><div class="stage-card-inner">${t.real}</div></div>${t.callout?`<div class="callout">${t.callout}</div>`:''}</div>
+      <div class="stage-card stage-real"><div class="stage-label">◑ The real deal</div><div class="stage-card-inner">${t.real}</div></div>${t.callout?`<div class="callout">${t.callout}</div>`:''}${EXAMPLES[tid]?`<div class="example"><b>${EXAMPLES[tid].label}</b><pre><code>${EXAMPLES[tid].body}</code></pre></div>`:''}</div>
     <div class="panel" id="p-quick">${quizBlock(inst5,quick,QUICK_OPTS)}</div>
     <div class="panel" id="p-scen">${quizBlock(instS,scen,SCEN_EXAM_OPTS)}</div>`;
   const TKEY={'p-real':'real','p-quick':'quick','p-scen':'scen'};
