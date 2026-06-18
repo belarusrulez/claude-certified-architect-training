@@ -103,19 +103,26 @@ tool_choice = {"type": "tool", "name": "extract_meta"}  # must call THAT tool
 # personal-only rules go in ~/.claude/CLAUDE.md and are never shared.
 # run /memory to see which memory files actually loaded.` },
 
-'commands-skills':{ label:'Example — a /review command + a skill', body:
+'commands-skills':{ label:'Example — a /review command + a complete skill', body:
 `# .claude/commands/review.md   ->  invoked as /review
+# (a command is just a reusable prompt - this body IS the command)
 Run the team review checklist on the staged diff:
 - report correctness & security only; skip style
 - output each finding as  file:line - severity - one-line fix
 
 # .claude/skills/release-notes/SKILL.md
 ---
-description: Draft release notes from merged PRs
-context: fork                 # isolate verbose output from the main session
-allowed-tools: [Read, Grep]   # no Bash / destructive tools
-argument-hint: &lt;version-tag&gt;   # prompt for the required param
----` },
+name: release-notes
+description: Draft release notes from PRs merged since a version tag.
+context: fork                          # run isolated; keep noise out of session
+allowed-tools: Read, Grep, Bash(git log:*)
+argument-hint: &lt;version-tag&gt;            # prompt for the required param
+---
+# ^ frontmatter configures the skill. The body below is what it DOES:
+Given &lt;version-tag&gt;, draft release notes:
+1. List merged PRs:  git log &lt;version-tag&gt;..HEAD --merges --oneline
+2. Group them by type (feat / fix / chore) from the PR titles.
+3. Output a Markdown changelog, newest first, with PR numbers.` },
 
 'path-rules':{ label:'Example — path-scoped rule (.claude/rules/)', body:
 `# .claude/rules/tests.md
