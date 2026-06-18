@@ -45,11 +45,11 @@ python3 serve.py --open      # http://localhost:8088
 │   ├── store.js            # localStorage load/save/export/import/reset
 │   ├── quiz.js             # question rendering, grading, scoring
 │   └── data/
-│       ├── domains.js      # the five domains and weights
-│       ├── topics.js       # per-chapter content (eli5 / real / quick / scenario)
-│       ├── examples.js     # one worked artifact per chapter (shown in Learn)
-│       ├── extra.js        # seed scenario bank
-│       └── extra-more.js   # expanded scenario bank (tops each chapter to 10+)
+│       ├── domains.js      # the five domains, weights, and chapter lists
+│       ├── topics.js       # aggregator: merges d1..d5 into TOPICS
+│       └── d1.js … d5.js   # one module per domain; each chapter carries its
+│                           #   own eli5 / real / example / quick / scenario
+│                           #   and a `ts` task-statement tag (e.g. "1.3")
 ├── deploy/nginx.conf       # static-serving config for the Docker image
 ├── docker-compose.yml
 ├── serve.py                # Docker-free local server
@@ -57,15 +57,21 @@ python3 serve.py --open      # http://localhost:8088
 └── plans/                  # architecture + build-order docs
 ```
 
+## Coverage
+
+Chapters map **1:1 to the exam guide's task statements** (Domain → `x.y`), so
+there are no silent gaps. 30 chapters across 5 domains; each is tagged with its
+task-statement id (shown in the chapter header).
+
 ## Adding content
 
-- **A new question** → append to the chapter's array in `js/data/extra-more.js`
-  (or `extra.js`). Shape: `{ q, options:[…4…], correct, why, traps:{…} }`.
-  The app shuffles option order per question (deterministically from a stored
-  seed), so author with `correct` pointing at the right option in its
-  authored position.
-- **A new chapter** → add an entry to `js/data/topics.js` and list its id under
-  the right domain in `js/data/domains.js`.
+- **A new question** → append to the chapter's `scenario` (or `quick`) array in
+  the relevant `js/data/d{N}.js`. Shape: `{ q, options:[…4…], correct, why,
+  traps:{…} }`. The app shuffles option order per question (deterministically
+  from a stored seed), so `correct` points at the right option in its authored
+  position.
+- **A new chapter** → add an entry to the right `js/data/d{N}.js` (with a `ts`
+  tag) and list its id under that domain in `js/data/domains.js`.
 
 ## Scoring
 
