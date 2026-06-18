@@ -43,6 +43,12 @@ export const D2 = {
     "required": ["order_id"]
   }
 }` },
+  fresh:`<ul>
+    <li><strong><code>input_examples</code> field</strong> — tool definitions can now carry schema-validated example inputs (roughly 20-200 tokens each) to steer the model toward correct argument shapes; not available on server tools. <a href="https://platform.claude.com/docs/en/build-with-claude/tool-use">docs</a></li>
+    <li><strong>Consolidate related ops</strong> — current guidance favors fewer tools with an <code>action</code> parameter over many near-duplicate tools, plus meaningful namespacing (e.g. <code>github_list_prs</code>) so names disambiguate. <a href="https://platform.claude.com/docs/en/build-with-claude/tool-use">docs</a></li>
+    <li><strong>Say what a tool does NOT return</strong> — best-practice descriptions now aim for 3-4+ sentences and explicitly state non-returns and non-use cases, reinforcing the chapter's edge-case advice. <a href="https://platform.claude.com/docs/en/build-with-claude/tool-use">docs</a></li>
+    <li><strong>MCP <code>title</code> and <code>icons</code></strong> — the MCP spec (2025-11-25) adds an optional <code>title</code> display name distinct from <code>name</code>, plus <code>icons</code>, so the human-facing label is separate from the routing identifier. <a href="https://modelcontextprotocol.io/specification/2025-11-25">docs</a></li>
+  </ul>`,
   quick:[
     {q:`What is the primary mechanism an LLM uses to choose between tools?`,
      options:[`The tool descriptions`,`The order tools appear in the array`,`The tool's return type`,`Alphabetical tool names`],
@@ -127,6 +133,12 @@ export const D2 = {
 }
 # valid query, zero matches != error -> return a normal empty result, not isError
 # access failure != empty success -> never disguise a failure as results: []` },
+  fresh:`<ul>
+    <li><strong>Protocol vs Tool Execution errors</strong> — the MCP spec (2025-11-25) formalizes JSON-RPC Protocol Errors (unknown tool, malformed request) versus Tool Execution Errors (returned as <code>isError:true</code> in the result); clients SHOULD surface execution errors to the model for self-correction. <a href="https://modelcontextprotocol.io/specification/2025-11-25">docs</a></li>
+    <li><strong><code>structuredContent</code> + <code>outputSchema</code></strong> — tools can now declare an <code>outputSchema</code> and return a typed, JSON-validated <code>structuredContent</code> result field, so structured errors and results get schema validation. <a href="https://modelcontextprotocol.io/specification/2025-11-25">docs</a></li>
+    <li><strong>New <code>resource_link</code> content + annotations</strong> — results can include a <code>resource_link</code> content type, and all content supports annotations (audience, priority, lastModified). <a href="https://modelcontextprotocol.io/specification/2025-11-25">docs</a></li>
+    <li><strong>No literal "retryable" field</strong> — the trainer's <code>isRetryable</code> framing is a useful model, but the spec has no such boolean; retryability is implied by the execution-vs-protocol distinction rather than a named field. <a href="https://modelcontextprotocol.io/specification/2025-11-25">docs</a></li>
+  </ul>`,
   quick:[
     {q:`Which enables the agent to recover intelligently from a tool failure?`,
      options:[`Structured metadata: category + <code>isRetryable</code> + readable message`,`A uniform generic "Operation failed" string`,`Silently returning empty results`,`Crashing the loop`],
@@ -208,6 +220,12 @@ export const D2 = {
 tool_choice = {"type": "any"}                           # must call SOME tool
 tool_choice = {"type": "tool", "name": "extract_meta"}  # must call THAT tool
 # scope each agent to ~4-5 role tools; array order does NOT enforce call order` },
+  fresh:`<ul>
+    <li><strong><code>tool_choice:none</code> is the documented default</strong> — when no tools are supplied, the API behaves as <code>none</code>. <a href="https://platform.claude.com/docs/en/build-with-claude/tool-use">docs</a></li>
+    <li><strong>Extended thinking + forced tools</strong> — <code>any</code> and <code>{type:tool}</code> return a 400 when extended thinking is active; only <code>auto</code> and <code>none</code> work alongside thinking. <a href="https://platform.claude.com/docs/en/build-with-claude/extended-thinking">docs</a></li>
+    <li><strong>New <code>strict:true</code> tool property</strong> — guarantees schema-valid inputs; combine with <code>tool_choice:any</code> to guarantee both a call AND valid arguments. <a href="https://platform.claude.com/docs/en/build-with-claude/tool-use">docs</a></li>
+    <li><strong>New <code>defer_loading:true</code></strong> — excludes a tool from the initial prompt and loads it later via tool search, preserving prompt cache; pairs with <code>allowed_callers</code> (direct vs <code>code_execution</code>) for least-privilege scoping. <a href="https://platform.claude.com/docs/en/build-with-claude/tool-use">docs</a></li>
+  </ul>`,
   quick:[
     {q:`Giving one agent 18 tools instead of 4-5 tends to:`,
      options:[`Degrade tool-selection reliability`,`Improve flexibility with no downside`,`Reduce token usage`,`Force parallelism`],
@@ -295,6 +313,12 @@ tool_choice = {"type": "tool", "name": "extract_meta"}  # must call THAT tool
 }
 // personal/experimental servers go in ~/.claude.json instead (not shared)
 // tools from ALL configured servers are discovered at connection time` },
+  fresh:`<ul>
+    <li><strong>SSE transport deprecated</strong> — use HTTP instead (<code>type:streamable-http</code>, alias <code>http</code>); a new WebSocket (<code>ws</code>) transport is also available. <a href="https://code.claude.com/docs/en/mcp">docs</a></li>
+    <li><strong>Scope naming nuance</strong> — the personal scope is now called <code>local</code> and the cross-project personal scope is <code>user</code>; the committed shared scope is still <code>project</code> (creates <code>.mcp.json</code>). Exam guide's user vs project framing holds; current docs split personal into <code>local</code> and <code>user</code>. <a href="https://code.claude.com/docs/en/mcp">docs</a></li>
+    <li><strong>Approval &amp; timeout controls</strong> — per-server <code>timeout</code> (ms) in <code>.mcp.json</code>, plus settings like <code>enableAllProjectMcpServers</code>, <code>enabled/disabledMcpjsonServers</code>, and enterprise <code>allowed/deniedMcpServers</code>; <code>list_changed</code> notifications refresh tool lists without reconnecting. <a href="https://code.claude.com/docs/en/mcp">docs</a></li>
+    <li><strong>Official registry &amp; API connector</strong> — <code>claude.ai/directory</code> is the official MCP registry (<code>claude mcp add</code>), and the MCP Connector (<code>mcp_toolset</code>, beta <code>mcp-client-2025-11-20</code>) lets the API itself connect to remote MCP servers without Claude Code. <a href="https://platform.claude.com/docs/en/agents-and-tools/mcp-connector">docs</a></li>
+  </ul>`,
   quick:[
     {q:`Where do you configure an MCP server so the whole team gets it via version control?`,
      options:[`<code>.mcp.json</code> (project scope)`,`<code>~/.claude.json</code>`,`Root <code>CLAUDE.md</code>`,`<code>.claude/commands/</code>`],
@@ -388,6 +412,12 @@ Read  file_path="src/config.ts"        # then Write the modified contents
 
 # run the suite                       -> BASH (shell)
 Bash  command="npm test"` },
+  fresh:`<ul>
+    <li><strong>New Anthropic server tools</strong> — since early 2025: <code>web_search</code>, <code>web_fetch</code>, <code>code_execution</code> (Bash + file ops + programmatic tool calls from a sandbox), <code>tool_search</code> (regex + BM25), and a client-side <code>memory</code> tool. <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview">docs</a></li>
+    <li><strong>New text-editor version for Claude 4</strong> — the built-in text-editor tool has an updated version aligned to Claude 4 models. <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/text-editor-tool">docs</a></li>
+    <li><strong>Single-file Grep satisfies read-before-edit</strong> — in Claude Code, a single-file <code>Grep</code> now counts as having read the file before editing it. <a href="https://code.claude.com/docs/en/overview">docs</a></li>
+    <li><strong>Parallel tool calls are independent</strong> — sibling tool calls run independently, so a failed <code>Bash</code> no longer cancels the others; <code>ToolSearch</code> is the default mechanism for loading deferred MCP tools. <a href="https://code.claude.com/docs/en/overview">docs</a></li>
+  </ul>`,
   quick:[
     {q:`You need to find every file matching <code>**/*.test.tsx</code> by name. Which tool?`,
      options:[`Glob — path/name pattern matching`,`Grep — content search`,`Read every file and check the name`,`Bash <code>cat</code>`],

@@ -145,7 +145,7 @@ function renderTopic(tid){
         <span class="eli5-chip"><span class="ico">◔</span> Explain like I'm 5 <span class="hov">— hover</span></span>
         <div class="eli5-pop"><div class="stage-label">◔ Explain like I'm 5</div>${t.eli5}</div>
       </div>
-      <div class="stage-card stage-real"><div class="stage-label">◑ The real deal</div><div class="stage-card-inner">${t.real}</div></div>${t.callout?`<div class="callout">${t.callout}</div>`:''}${t.example?`<div class="example"><b>${t.example.label}</b><pre><code>${t.example.body}</code></pre></div>`:''}</div>
+      <div class="stage-card stage-real"><div class="stage-label">◑ The real deal</div><div class="stage-card-inner">${t.real}</div></div>${t.callout?`<div class="callout">${t.callout}</div>`:''}${t.example?`<div class="example"><b>${t.example.label}</b><pre><code>${t.example.body}</code></pre></div>`:''}${t.fresh?`<div class="fresh"><b class="fl">Recent in the docs · beyond the Feb-2025 exam guide</b>${t.fresh}</div>`:''}</div>
     <div class="panel" id="p-quick">${quizBlock(inst5,quick,QUICK_OPTS)}</div>
     <div class="panel" id="p-scen">${quizBlock(instS,scen,SCEN_EXAM_OPTS)}</div>`;
   const TKEY={'p-real':'real','p-quick':'quick','p-scen':'scen'};

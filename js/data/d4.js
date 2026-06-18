@@ -32,6 +32,10 @@ Report ONLY:
 SKIP: style, naming, formatting, local idiomatic patterns.
 For each finding: file:line - severity(critical|major) - one-line fix.
 # specific categories beat "be conservative / only high-confidence".` },
+  fresh:`<ul>
+    <li><strong>LLM-graded rubrics are canonical</strong> — the docs treat explicit, auto-graded rubrics (binary/ordinal/Likert) as the standard evaluation pattern, e.g. "must mention 'Acme Inc.' in the first sentence, else graded incorrect." This is the operational form of the categorical-criteria principle. <a href="https://platform.claude.com/docs">docs</a></li>
+    <li><strong>Discard the judge's reasoning before the verdict</strong> — have the grading model reason in &lt;thinking&gt; tags, then drop that reasoning and keep only the final verdict, to cut false positives. Still prompt-engineering only; no new API. <a href="https://platform.claude.com/docs">docs</a></li>
+  </ul>`,
   quick:[
     {q:`Adding "only report high-confidence findings" to a noisy reviewer prompt will:`,
      options:[`Reliably improve precision`,`Not meaningfully improve precision — it's vague`,`Eliminate all false positives`,`Force structured output`],
@@ -114,6 +118,11 @@ Input: "update my email address"
 Tool:  get_customer    # profile change -> customer tool
 &lt;/example&gt;
 # cover the AMBIGUOUS cases and show WHY, so judgment generalizes.` },
+  fresh:`<ul>
+    <li><strong>Put &lt;thinking&gt; blocks inside examples</strong> — the docs now suggest showing a reasoning pattern within each example (a worked &lt;thinking&gt; block) so the model generalizes the reasoning, not just the answer. <a href="https://www.anthropic.com/engineering">docs</a></li>
+    <li><strong>Use Claude to build the examples</strong> — have Claude itself generate and evaluate few-shot examples for quality and diversity, rather than hand-curating alone. <a href="https://platform.claude.com/docs">docs</a></li>
+    <li><strong>Opus 4.5 is sensitive to "think"</strong> — with extended thinking off, the word "think" can perturb behavior; prefer "consider" or "evaluate" in prompts and examples. Core guidance (3-5 diverse, structured examples in &lt;example&gt; tags) is unchanged. <a href="https://platform.claude.com/docs">docs</a></li>
+  </ul>`,
   quick:[
     {q:`Detailed instructions still give inconsistent formatting. Best fix?`,
      options:[`A few-shot examples (2-4 targeted)`,`A longer, sterner instruction`,`A bigger model`,`More tools`],
@@ -201,6 +210,12 @@ Tool:  get_customer    # profile change -> customer tool
 }]
 tool_choice = {"type": "tool", "name": "extract_invoice"}
 # schema kills SYNTAX errors, not SEMANTIC ones (e.g. lines that don't sum).` },
+  fresh:`<ul>
+    <li><strong>Native Structured Outputs is now GA</strong> — exam guide teaches tool_use-as-JSON for plain JSON; current docs: use <code>output_config.format</code> with type <code>json_schema</code> for guaranteed schema compliance via constrained decoding (no beta header). It supersedes the tool_use trick for plain JSON; the trick still works but is no longer recommended. <a href="https://platform.claude.com/docs">docs</a></li>
+    <li><strong>strict:true on tool definitions</strong> — guarantees schema-valid tool inputs. Native parse helpers: Python <code>client.messages.parse()</code> + Pydantic, TS <code>zodOutputFormat()</code> + Zod; <code>response.parsed_output</code> is typed. <a href="https://platform.claude.com/docs">docs</a></li>
+    <li><strong>Limits</strong> — no recursive schemas, no min/max/minLength, no external $ref; max 20 strict tools. <a href="https://platform.claude.com/docs">docs</a></li>
+    <li><strong>BREAKING: prefill-to-force-JSON returns 400 on Claude 4.6+</strong> — the old trick of prefilling an assistant turn to force JSON now errors; migrate to Structured Outputs or instruction+retry. <a href="https://platform.claude.com/docs">docs</a></li>
+  </ul>`,
   quick:[
     {q:`Most reliable way to get guaranteed schema-compliant structured output?`,
      options:[`Ask for JSON in the prompt and parse the text`,`<code>tool_use</code> with a JSON schema`,`Regex over the model's prose`,`A longer system prompt`],
@@ -280,6 +295,11 @@ followup = [
 ]
 # data absent from the source can't be conjured by retrying - don't.
 # semantic self-check: emit calculated_total beside stated_total; flag mismatch.` },
+  fresh:`<ul>
+    <li><strong>Ask for the structure first, retry as fallback</strong> — current docs: newer models match complex schemas reliably from instructions alone, so first just ask the model to conform, with retries as the documented fallback before reaching for structured outputs. <a href="https://platform.claude.com/docs">docs</a></li>
+    <li><strong>Append a self-check instruction</strong> — adding "Before you finish, verify your answer against [criteria]" reliably catches coding and math errors. <a href="https://www.anthropic.com/engineering">docs</a></li>
+    <li><strong>Tool error messages should be actionable</strong> — return specific, actionable improvement guidance rather than raw tracebacks so the model can self-correct. Retry/validation stays application-layer. <a href="https://platform.claude.com/docs">docs</a></li>
+  </ul>`,
   quick:[
     {q:`A required value is simply not present in the source document. Will retry-with-feedback fix it?`,
      options:[`Yes, eventually`,`No — the information is absent; retries can't create it`,`Only with a bigger model`,`Only in batch mode`],
@@ -358,6 +378,11 @@ client.messages.batches.create(requests=[
 ])
 # resubmit only FAILED custom_ids (chunk any that exceeded context).
 # never use batch for a blocking pre-merge check.` },
+  fresh:`<ul>
+    <li><strong>Results TTL is 29 days</strong> — batch results are retrievable for 29 days after creation. Core terms hold: ~50% cheaper, most batches under 1h, 24h SLA, 10,000 requests/batch max. <a href="https://platform.claude.com/docs">docs</a></li>
+    <li><strong>Extended-output beta raises max_tokens to 300k</strong> — the <code>output-300k-2026-03-24</code> header lifts max_tokens to 300,000 for Opus 4.6-4.8 / Sonnet 4.6. <a href="https://platform.claude.com/docs">docs</a></li>
+    <li><strong>Not eligible for Zero Data Retention</strong> — the extended-output beta is excluded from ZDR (compliance note). Streaming is unsupported on batches (async polling only). <a href="https://platform.claude.com/docs">docs</a></li>
+  </ul>`,
   quick:[
     {q:`A blocking pre-merge check that developers wait on should use:`,
      options:[`The Message Batches API for the cost savings`,`The synchronous API`,`Either, with polling`,`Whichever finishes first`],
@@ -445,6 +470,12 @@ review_integration(changed_files)   # cross-file DATA-FLOW pass
 
 # 3) verification pass: each finding carries self-reported confidence
 #    low-confidence -&gt; route to a human or a second reviewer.` },
+  fresh:`<ul>
+    <li><strong>Orchestrator + subagents beat single Opus ~90%</strong> — Anthropic's own research system (Opus orchestrator + Sonnet subagents) outperformed a single Opus by about 90% on an internal eval, validating the multi-instance pattern. <a href="https://www.anthropic.com/engineering">docs</a></li>
+    <li><strong>Separate context windows prevent groupthink</strong> — subagents use isolated context windows by explicit design, to avoid path-dependency and shared blind spots; a dedicated CitationAgent verifies attributions as its own pass. <a href="https://www.anthropic.com/engineering">docs</a></li>
+    <li><strong>Watch over-delegation</strong> — Opus 4.6 can proactively spawn subagents; the documented anti-pattern is over-delegation (e.g. 50 subagents for a trivial query). Control the spawn threshold by prompt. <a href="https://www.anthropic.com/engineering">docs</a></li>
+    <li><strong>Self-correction chaining is canonical</strong> — generate -&gt; review against criteria -&gt; refine, each as a separate call, is the documented multi-pass pattern. <a href="https://platform.claude.com/docs">docs</a></li>
+  </ul>`,
   quick:[
     {q:`Why is asking the generating session to review its own output weaker than using a second instance?`,
      options:[`The same session retains its generation reasoning and is less likely to question its own decisions`,`Second instances are always cheaper`,`The first session runs out of tokens`,`Self-review is disallowed by the API`],

@@ -116,6 +116,15 @@ h2{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:20px;letter-
 .example pre{margin:0;padding:14px 16px;overflow-x:auto;background:var(--mono-bg);font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.6;color:var(--mono-ink);white-space:pre;tab-size:2}
 .example pre code{background:none;padding:0;border-radius:0;font-size:inherit;color:inherit;white-space:pre;word-break:normal}
 
+/* "Recent in the docs" — additive, post-exam-guide updates (teal, distinct from exam-canonical content) */
+.fresh{margin-top:18px;border-left:3px solid var(--teal);background:var(--teal-soft);border-radius:0 10px 10px 0;padding:13px 16px;font-size:14.5px}
+.fresh > b.fl{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--teal);display:block;margin-bottom:7px}
+.fresh ul{margin:4px 0 0;padding-left:18px}
+.fresh li{margin-bottom:6px}
+.fresh li:last-child{margin-bottom:0}
+.fresh code{background:var(--mono-bg)}
+.fresh a{color:var(--teal);text-decoration:underline;text-underline-offset:2px}
+
 .callout{margin-top:18px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0;padding:12px 16px;font-size:14.5px}
 .callout b{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--accent-ink);display:block;margin-bottom:4px}
 

@@ -44,6 +44,13 @@ export const D3 = {
 
 # run  /memory  to list which memory files actually loaded this session —
 # the fast way to diagnose "works for me, not for my teammate".` },
+  fresh:`<ul>
+    <li><strong><code>.claude/CLAUDE.md</code> is now a first-class project location</strong> — the current docs list <code>.claude/CLAUDE.md</code> alongside the root <code>CLAUDE.md</code> as an accepted committed project-scope file, so both are valid homes for team standards. <a href="https://code.claude.com/docs/en/memory">docs</a></li>
+    <li><strong><code>@import</code> path + hop rules</strong> — imports accept relative and absolute paths and chain up to 4 hops deep; a path inside a backtick code span is skipped (mention it without importing). <a href="https://code.claude.com/docs/en/memory">docs</a></li>
+    <li><strong>Self-writing memory via <code>/memory</code></strong> — newer Claude Code (v2.1.59+) maintains its own cross-session notes under <code>~/.claude/projects/&lt;repo&gt;/memory/MEMORY.md</code>, which <code>/memory</code> also manages — this is broader than the exam-era "list loaded files" framing. <a href="https://code.claude.com/docs/en/memory">docs</a></li>
+    <li><strong>Managed-policy CLAUDE.md</strong> — an org-managed file (macOS <code>/Library/Application Support/ClaudeCode/CLAUDE.md</code>) cannot be excluded; <code>claudeMdExcludes</code> only skips ancestor files in monorepos. <a href="https://code.claude.com/docs/en/memory">docs</a></li>
+    <li><strong>AGENTS.md interop</strong> — you can pull an existing <code>AGENTS.md</code> into Claude's memory with <code>@AGENTS.md</code>. <a href="https://code.claude.com/docs/en/memory">docs</a></li>
+  </ul>`,
   quick:[
     {q:`A teammate isn't receiving an instruction you wrote. Most likely cause?`,
      options:[`It's in <code>~/.claude/CLAUDE.md</code> (user-level), not project-level`,`Their model version differs`,`<code>@import</code> is deprecated`,`CLAUDE.md only works in CI`],
@@ -143,6 +150,13 @@ Given &lt;version-tag&gt;, draft release notes:
 1. List merged PRs:  git log &lt;version-tag&gt;..HEAD --merges --oneline
 2. Group them by type (feat / fix / chore) from the PR titles.
 3. Output a Markdown changelog, newest first, with PR numbers.` },
+  fresh:`<ul>
+    <li><strong>Commands and skills have merged</strong> — in current Claude Code, <code>.claude/commands/deploy.md</code> and <code>.claude/skills/deploy/SKILL.md</code> both create a <code>/deploy</code> invocation (old command files still work). The two constructs are no longer cleanly separate. <a href="https://code.claude.com/docs/en/skills">docs</a></li>
+    <li><strong>The exam's <code>context: fork</code> key is gone</strong> — exam guide uses <code>context: fork</code> to run a skill in a subagent; current Claude Code docs no longer list that key. Running a skill in a subagent is now configured differently (a <code>subagent</code> capability). Treat <code>context: fork</code> as the exam answer, not current syntax. <a href="https://code.claude.com/docs/en/skills">docs</a></li>
+    <li><strong>Current SKILL.md frontmatter</strong> — <code>name</code>, <code>description</code>, <code>allowed-tools</code>, plus <code>disallowed-tools</code> (v2.1.152+) and <code>disable-model-invocation</code>. <code>argument-hint</code> is not confirmed in the current skills docs. <a href="https://code.claude.com/docs/en/skills">docs</a></li>
+    <li><strong>Plugins are GA</strong> (public beta Oct 9 2025) — a plugin bundles commands, subagents, MCP servers, and hooks; install with <code>/plugin marketplace add org/repo</code>. <a href="https://www.claude.com/blog">docs</a></li>
+    <li><strong>Skills follow an open standard</strong> — Agent Skills are a published spec (agentskills.io), so a skill written for Claude Code is portable across compliant agents. <a href="https://agentskills.io">docs</a></li>
+  </ul>`,
   quick:[
     {q:`A custom <code>/review</code> command should be available to everyone who pulls the repo. Put it in:`,
      options:[`<code>~/.claude/commands/</code>`,`<code>.claude/commands/</code> in the repo`,`Root <code>CLAUDE.md</code>`,`<code>.claude/config.json</code>`],
@@ -225,6 +239,13 @@ paths: ["**/*.test.tsx", "**/*.spec.ts"]   # glob — matches by file TYPE
 # loads ONLY when editing a file matching the glob — regardless of which
 # directory it lives in. A directory CLAUDE.md couldn't cover tests spread
 # across src/, packages/, and apps/ without a copy in every folder.` },
+  fresh:`<ul>
+    <li><strong><code>.claude/rules/</code> is the canonical path-rules mechanism</strong> — markdown files carry a YAML <code>paths:</code> glob and load lazily only when a matching file is accessed, confirming the exam's conditional-loading model. <a href="https://code.claude.com/docs/en/rules">docs</a></li>
+    <li><strong>Glob features</strong> — <code>paths:</code> globs support brace expansion (e.g. <code>**/*.{ts,tsx}</code>) and <code>**</code> recursion for matching by file type across the tree. <a href="https://code.claude.com/docs/en/rules">docs</a></li>
+    <li><strong>User-level rules</strong> — rules placed in <code>~/.claude/rules/</code> apply across all your projects (personal, not shared), mirroring the user vs project split for CLAUDE.md. <a href="https://code.claude.com/docs/en/rules">docs</a></li>
+    <li><strong>Symlinks are supported</strong> — rule files may be symlinked, and circular symlinks are detected rather than looping. <a href="https://code.claude.com/docs/en/rules">docs</a></li>
+    <li><strong>Debugging rule loads</strong> — an <code>InstructionsLoaded</code> hook fires when CLAUDE.md/rules load, so you can confirm whether a glob actually matched. <a href="https://code.claude.com/docs/en/hooks">docs</a></li>
+  </ul>`,
   quick:[
     {q:`Conventions for test files that are spread across many directories are best handled by:`,
      options:[`A subdirectory <code>CLAUDE.md</code> in each folder`,`<code>.claude/rules/</code> with a glob like <code>**/*.test.tsx</code>`,`The root <code>CLAUDE.md</code> with headers`,`A skill the developer must invoke`],
@@ -305,6 +326,13 @@ paths: ["**/*.test.tsx", "**/*.spec.ts"]   # glob — matches by file TYPE
 
 # then, after approval -> direct-execute the agreed plan.
 # a one-line fix with a clear stack trace -> skip planning, just direct-execute.` },
+  fresh:`<ul>
+    <li><strong>Subagents now live in <code>.claude/agents/</code></strong> — project subagents in <code>.claude/agents/</code> and user subagents in <code>~/.claude/agents/</code>, authored as AGENT.md files (the Explore sub-agent the chapter describes is one such subagent). <a href="https://code.claude.com/docs/en/sub-agents">docs</a></li>
+    <li><strong>Plan/acceptEdits now guards code-execution config</strong> — v2.1.160 prompts before modifying build-tool config that could grant code execution, even in those modes. <a href="https://code.claude.com/docs/en/permissions">docs</a></li>
+    <li><strong>Subagent nesting up to 5 deep</strong> (v2.1.172) — a planning subagent can spawn its own helpers within that limit. <a href="https://code.claude.com/docs/en/sub-agents">docs</a></li>
+    <li><strong><code>claude agents</code> monitor view</strong> — a research preview (v2.1.139+) for watching parallel background agents while a large plan executes. <a href="https://code.claude.com/docs/en/sub-agents">docs</a></li>
+    <li><strong>Multi-phase <code>/init</code></strong> — setting <code>CLAUDE_CODE_NEW_INIT=1</code> runs an <code>/init</code> that explores the codebase with a subagent before writing CLAUDE.md. <a href="https://code.claude.com/docs/en/memory">docs</a></li>
+  </ul>`,
   quick:[
     {q:`Restructuring a monolith into microservices (dozens of files, architectural decisions) calls for:`,
      options:[`Direct execution, incrementally`,`Plan mode`,`Batch API`,`<code>fork_session</code> only`],
@@ -402,6 +430,12 @@ paths: ["**/*.test.tsx", "**/*.spec.ts"]   # glob — matches by file TYPE
 # 4) Batch vs sequence:
 #    issues that INTERACT -> one detailed message together
 #    issues that are INDEPENDENT -> fix sequentially, verify each` },
+  fresh:`<ul>
+    <li><strong>Mid-session config tweaks</strong> — <code>/config key=value</code> (v2.1.181) sets a config value during a session, so you can adjust the loop without restarting. <a href="https://code.claude.com/docs/en/slash-commands">docs</a></li>
+    <li><strong><code>/rewind</code> checkpointing</strong> — with <code>fileCheckpointingEnabled</code> (v2.1.119+) you can revert file changes from a refinement step that went wrong instead of hand-undoing edits. <a href="https://code.claude.com/docs/en/checkpointing">docs</a></li>
+    <li><strong>Auto-compact</strong> — <code>autoCompactEnabled</code> (v2.1.119+) manages the context window automatically during long iterative sessions, complementing offloading work to a subagent. <a href="https://code.claude.com/docs/en/costs">docs</a></li>
+    <li><strong>Hook-driven transformation</strong> — a <code>PostToolUse</code> hook can rewrite a tool result via <code>updatedToolOutput</code>, letting you build a deterministic iterative transformation step rather than re-prompting by hand. <a href="https://code.claude.com/docs/en/hooks">docs</a></li>
+  </ul>`,
   quick:[
     {q:`A prose description keeps producing inconsistent transformations. Most effective fix?`,
      options:[`Provide 2–3 concrete input/output examples`,`Rewrite the description as a longer paragraph`,`Lower the temperature`,`Switch to a larger model`],
@@ -491,6 +525,13 @@ claude -p "Review this PR for security issues" \\
 claude -p "Re-review. Prior findings attached; report only NEW or
   still-unaddressed issues." --output-format json \\
   --json-schema ./review.schema.json < prior-findings.json` },
+  fresh:`<ul>
+    <li><strong><code>claude-code-action</code> is now v1.0 GA with breaking renames</strong> — the exam predates this. Inputs renamed: <code>direct_prompt</code> &rarr; <code>prompt</code>; <code>custom_instructions</code> &rarr; <code>claude_args: --append-system-prompt</code>; <code>max_turns</code> &rarr; <code>claude_args: --max-turns</code>; <code>allowed_tools</code> &rarr; <code>claude_args: --allowedTools</code>. <a href="https://github.com/anthropics/claude-code-action">docs</a></li>
+    <li><strong>Mode is auto-detected</strong> — the GA action no longer needs <code>mode: "tag"</code>; it detects the trigger automatically. <a href="https://github.com/anthropics/claude-code-action">docs</a></li>
+    <li><strong><code>claude_args</code> passes any CLI flag through</strong> — a single escape hatch to forward any Claude Code CLI flag from the GitHub Action. <a href="https://github.com/anthropics/claude-code-action">docs</a></li>
+    <li><strong>Bedrock / Vertex in CI</strong> — <code>use_bedrock</code> / <code>use_vertex</code> run the action against those providers; <code>availableModels</code> / <code>enforceAvailableModels</code> restrict which model CI may choose. <a href="https://github.com/anthropics/claude-code-action">docs</a></li>
+    <li><strong>The headless flags still hold</strong> — exam guide's <code>-p</code>/<code>--print</code> + <code>--output-format json</code> still describe headless Claude Code itself; the renames above are about the GitHub Action wrapper, not the CLI. <a href="https://code.claude.com/docs/en/headless">docs</a></li>
+  </ul>`,
   quick:[
     {q:`Your CI job runs <code>claude "..."</code> and hangs waiting for input. Fix?`,
      options:[`Set <code>CLAUDE_HEADLESS=true</code>`,`Add the <code>-p</code> (<code>--print</code>) flag`,`Add <code>--batch</code>`,`Redirect stdin from <code>/dev/null</code>`],
